@@ -1,0 +1,29 @@
+name: Build LunarCrackTool EXE
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1.1
+
+    - name: Restore NuGet packages
+      run: nuget restore CrackedLunarAccountTool.sln
+
+    - name: Build solution
+      run: msbuild CrackedLunarAccountTool.sln /p:Configuration=Release
+
+    - name: Upload EXE
+      uses: actions/upload-artifact@v3
+      with:
+        name: CrackedLunarAccountTool.exe
+        path: '**/bin/Release/*.exe'
